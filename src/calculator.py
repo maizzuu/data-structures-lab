@@ -1,3 +1,5 @@
+from calculatorIO import CalculatorIO
+
 operators = {
     "+": {"precedence":2, "associativity":"Left"},
     "-": {"precedence":2, "associativity":"Left"},
@@ -7,47 +9,75 @@ operators = {
 }
 
 class Calculator:
-    def __init__ (self):
+    def __init__ (self, io=CalculatorIO()):
         self.expression = ""
-        self.output = ""
+        self.output = []
         self.operators = []
+        self.io = io
 
     def algorithm(self,expression):
-        previous = {"input": "", "type": ""}
+        previous = {"input": "", "type": ""} # type isn't needed until functions are included
         for i in range(0, len(expression)):
             token = expression[i]
-            next = expression[i+1]
+            next = expression[i+1] if i<(len(expression)-1) else None
 
             if token in "0123456789":
-                if next in "0123456789":
+                if not next:
+                    self.output.append(previous["input"] + token)
+                elif next in "0123456789":
                     previous["input"] += token
                 else:
-                    input = previous["input"] + token
-                    output += input
+                    self.output.append(previous["input"] + token)
+                    previous["input"] = ""
             
             elif token in operators:
-                top = self.operators[-1]
-                while (
-                    top != "(" 
-                    and ((operators[top]["precedence"] > operators[token]["presedence"]) 
-                    or (operators[top]["presedence"] == operators[token]["presedence"] 
-                    and operators[token]["associativity"] == "Left"))
-                ):
-                    output =+ self.operators.pop()
-                self.operators.append(token)
+                if not self.operators:
+                    self.operators.append(token)
+                else:
+                    while (
+                        self.operators[-1] != "(" 
+                        and ((operators[self.operators[-1]]["precedence"] > operators[token]["precedence"]) 
+                        or (operators[self.operators[-1]]["precedence"] == operators[token]["precedence"] 
+                        and operators[token]["associativity"] == "Left"))
+                    ):
+                        self.output.append(self.operators.pop())
+                        if len(self.operators) == 0:
+                            break
+                    self.operators.append(token)
             elif token == "(":
                 self.operators.append(token)
+            elif token == ")":
+                while True:
+                    try:
+                        top = self.operators.pop()
+                    except IndexError:
+                        self.io.write(f"ERROR: mismatched parenthesis\n")
+                        quit()
+                    if top != "(":
+                        self.output.append(top)
+                        continue
+                    else:
+                        break
+        while self.operators:
+            self.output.append(self.operators.pop())
+                    
             
     def start(self):
         while True:
-            print("Input an expression to calculate, leave empty to exit, help for instructions")
-            self.expression = input("Input:")
+            self.expression = self.io.read()
             print()
             if self.expression == "":
+                self.io.write("Quitting calculator")
                 break
             elif self.expression == "help":
-                print("***INSERT INSTRUCTIONS HERE***")
+                self.io.write("instructions")
                 print()
             else:
                 self.algorithm(self.expression)
-            # TODO handle output and calculate answer
+            self.io.write(self.output)
+            self.clear()
+
+    def clear(self):
+        # TODO clear all variables
+        self.output = []
+        self.operators = []
