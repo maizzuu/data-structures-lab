@@ -10,6 +10,13 @@ operators = {
 
 
 class Calculator:
+    """Class that uses the shunting-yard algorithm to turn
+    an infix expression into a reverse polish one
+
+    Attirbutes:
+        io: class object for inputs and outputs
+    """
+
     def __init__(self, io=CalculatorIO()):
         self.expression = ""
         self.output = []
