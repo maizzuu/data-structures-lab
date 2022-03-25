@@ -51,8 +51,8 @@ class Calculator:
                     try:
                         top = self.operators.pop()
                     except IndexError:
-                        self.io.write(f"ERROR: mismatched parenthesis\n")
-                        quit()
+                        self.io.write("ERROR: mismatched parentheses")
+                        break
                     if top != "(":
                         self.output.append(top)
                         continue
@@ -74,10 +74,9 @@ class Calculator:
                 print()
             else:
                 self.algorithm(self.expression)
-            self.io.write(self.output)
-            self.clear()
+                self.io.write(" ".join(self.output))
+                self.clear()
 
     def clear(self):
-        # TODO clear all variables
         self.output = []
         self.operators = []
