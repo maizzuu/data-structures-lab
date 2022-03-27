@@ -1,3 +1,6 @@
+from types import NoneType
+
+
 operators = {
     "+": {"precedence": 2, "associativity": "Left"},
     "-": {"precedence": 2, "associativity": "Left"},
@@ -41,7 +44,7 @@ class ShuntingYard:
             self.output.append(self.opstack.pop())
         return " ".join(self.output)
 
-    def number(self, token: str, next_token: str | None):
+    def number(self, token: str, next_token: str | NoneType):
         if not next_token:
             self.output.append(self.previous["input"] + token)
         elif next_token in "0123456789":
