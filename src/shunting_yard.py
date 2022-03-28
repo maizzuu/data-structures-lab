@@ -1,6 +1,3 @@
-from types import NoneType
-
-
 operators = {
     "+": {"precedence": 2, "associativity": "Left"},
     "-": {"precedence": 2, "associativity": "Left"},
@@ -11,14 +8,40 @@ operators = {
 
 
 class ShuntingYard:
+    """This class is used to parse an expression using the Shunting-yard algorithm.
+
+    Infix notation -> RPN.
+
+    Attributes:
+        expression: The expression which will be parsed.
+        output: A list that for storing the output as the algorithm parses the input.
+        opstack: A list that is used to store operators.
+        previous: A dictionary containing the previous character(s) and its type.
+    """
+
     def __init__(self, expression: str):
+        """The constructor for the ShuntingYard class.
+
+        This constructor prepares the class for the parsing by creating empty lists and dict.
+
+        Args:
+            expression (str): The expression that will be parsed.
+        """
         self.expression = expression
         self.output = []
         self.opstack = []
         # type isn't needed until functions are included
         self.previous = {"input": "", "type": ""}
 
-    def parse(self):
+    def parse(self) -> str:
+        """Method that is in charge of parsing the expression and returning the final output.
+
+        When the current token is a parenthesis, the method excepts
+        an IndexError in case the parentheses are mismatched.
+
+        Returns:
+            str: The given expression in reverse polish notation.
+        """
 
         for index, token in enumerate(self.expression):
             try:
@@ -44,7 +67,14 @@ class ShuntingYard:
             self.output.append(self.opstack.pop())
         return " ".join(self.output)
 
-    def number(self, token: str, next_token: str | NoneType):
+    # can't define the type of next_token because it fails the CI build
+    def number(self, token: str, next_token):
+        """_summary_
+
+        Args:
+            token (str): _description_
+            next_token: _description_
+        """
         if not next_token:
             self.output.append(self.previous["input"] + token)
         elif next_token in "0123456789":
@@ -54,6 +84,11 @@ class ShuntingYard:
             self.previous["input"] = ""
 
     def operator(self, token: str):
+        """A method for handling an operator token.
+
+        Args:
+            token (str): The operator.
+        """
         if not self.opstack:
             self.opstack.append(token)
         else:
@@ -71,9 +106,14 @@ class ShuntingYard:
             self.opstack.append(token)
 
     def parentheses(self, token: str):
+        """A method for handling a parenthesis token.
+
+        Args:
+            token (str): The left or right parenthesis.
+        """
         if token == "(":
             self.opstack.append(token)
-        elif token == ")":
+        else:  # token == ")"
             while True:
                 top = self.opstack.pop()
                 if top != "(":
