@@ -3,20 +3,31 @@ from shunting_yard import ShuntingYard
 
 
 class Calculator:
-    """Class that uses the shunting-yard algorithm to turn
-    an infix expression into a reverse polish one
+    """Class that is the framework for the calculator.
 
-    Attirbutes:
-        io: class object for inputs and outputs
+    This class is used to create an instance of the calculator and to start
+    that calculator. It needs an IO attribute for getting user inputs and
+    printing outputs. It will ask the user for an input via the IO module,
+    and then give it to the algorithm module for parsing.
+
+    Attributes:
+        io: Class instance for inputs and outputs. The default value is of the CalculatorI0 class.
     """
 
     def __init__(self, io=CalculatorIO()):
+        """The constructor for this class. It creates an instance of the IO-class.
+
+        Args:
+            io: Used for inputs and outputs. Defaults to CalculatorIO.
+        """
         self.io = io
 
-    def algorithm(self, expression):
-        pass
-
     def start(self):
+        """Starts the calculator and is in charge of running it.
+
+        Is also in charge of asking the IO for inputs and giving it outputs, as well as
+        interpreting the user input and giving it for the algorithm for parsing.
+        """
         while True:
             expression = self.io.read()
             print()
@@ -26,9 +37,12 @@ class Calculator:
             if expression == "help":
                 self.instructions()
             else:
+                # a new instance created for each expression
                 algorithm = ShuntingYard(expression)
                 rpn = algorithm.parse()
                 self.io.write(rpn)
 
     def instructions(self):
+        """Uses the IO to print out instructions for the calculator.
+        """
         self.io.write("instructions")
