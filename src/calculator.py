@@ -1,5 +1,6 @@
 from calculatorIO import CalculatorIO
 from shunting_yard import ShuntingYard
+from evaluator import Evaluator
 
 
 class Calculator:
@@ -38,9 +39,9 @@ class Calculator:
                 self.instructions()
             else:
                 # a new instance created for each expression
-                algorithm = ShuntingYard(expression)
-                rpn = algorithm.parse()
-                self.io.write(rpn)
+                rpn = ShuntingYard(expression).parse()
+                result = Evaluator(rpn).evaluate()
+                self.io.write(result)
 
     def instructions(self):
         """Uses the IO to print out instructions for the calculator.
