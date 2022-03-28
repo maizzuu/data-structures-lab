@@ -71,3 +71,19 @@ class TestCalculator(unittest.TestCase):
         calc.start()
 
         self.assertEqual(io.outputs[0], "3 4 * 2 5 + *")
+
+    def test_algorithm_long_expression(self):
+        io = StubIO(["1*(4+5)^8+5+(8-4)*5", ""])
+
+        calc = Calculator(io)
+        calc.start()
+
+        self.assertEqual(io.outputs[0], "1 4 5 + 8 ^ * 5 + 8 4 - 5 * +")
+
+    def test_unknown_input(self):
+        io = StubIO(["1+2€", ""])
+
+        calc = Calculator(io)
+        calc.start()
+
+        self.assertEqual(io.outputs[0], "ERROR: unknown input")
