@@ -10,4 +10,3 @@
 ### Weekly reports:  
 * [Week 1](https://github.com/maizzuu/data-structures-lab/blob/main/documentation/weekly_reports/week_1.md)
 * [Week 2](https://github.com/maizzuu/data-structures-lab/blob/main/documentation/weekly_reports/week_2.md)
-* Week 3
