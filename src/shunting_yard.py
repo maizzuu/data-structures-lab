@@ -7,6 +7,10 @@ operators = {
 }
 
 
+class InputError(Exception):
+    pass
+
+
 class ShuntingYard:
     """This class is used to parse an expression using the Shunting-yard algorithm.
 
@@ -52,6 +56,12 @@ class ShuntingYard:
             if token in "0123456789":
                 self.number(token, next_token)
 
+            elif token == ".":
+                try:
+                    self.period(token, next_token)
+                except InputError:
+                    return "ERROR: invalid input"
+
             elif token in operators:
                 self.operator(token)
 
@@ -60,10 +70,13 @@ class ShuntingYard:
                     self.parentheses(token)
                 except IndexError:
                     return "ERROR: mismatched parentheses"
+
             else:
-                return "ERROR: unknown input"
+                return "ERROR: invalid input"
 
         while self.opstack:
+            if "(" in self.opstack or ")" in self.opstack:
+                return "ERROR: mismatched parentheses"
             self.output.append(self.opstack.pop())
         return " ".join(self.output)
 
@@ -77,11 +90,16 @@ class ShuntingYard:
         """
         if not next_token:
             self.output.append(self.previous["input"] + token)
-        elif next_token in "0123456789":
+        elif next_token in ".0123456789":
             self.previous["input"] += token
         else:
             self.output.append(self.previous["input"] + token)
             self.previous["input"] = ""
+
+    def period(self, token: str, next_token):
+        if not next_token or next_token not in "0123456789":
+            raise InputError
+        self.previous["input"] += token
 
     def operator(self, token: str):
         """A method for handling an operator token.
