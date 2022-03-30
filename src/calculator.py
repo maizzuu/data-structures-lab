@@ -20,8 +20,10 @@ class Calculator:
 
         Args:
             io: Used for inputs and outputs. Defaults to CalculatorIO.
+            rpn: Stores the RPN version of the expression. (Only for testing purposes.)
         """
         self.io = io
+        self.rpn = ""
 
     def start(self):
         """Starts the calculator and is in charge of running it.
@@ -39,11 +41,16 @@ class Calculator:
                 self.instructions()
             else:
                 # a new instance created for each expression
-                rpn = ShuntingYard(expression).parse()
-                result = Evaluator(rpn).evaluate()
-                self.io.write(result)
+                self.rpn = ShuntingYard(expression).parse()
+                try:
+                    result = Evaluator(self.rpn).evaluate()
+                    self.io.write(result)
+                except ValueError:  # for when rpn is actually an error message
+                    self.io.write(self.rpn)
 
     def instructions(self):
         """Uses the IO to print out instructions for the calculator.
         """
         self.io.write("instructions")
+        # instrcutions to be added:
+        # use periods to indicate decimal places
