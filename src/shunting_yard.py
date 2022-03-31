@@ -48,17 +48,29 @@ class ShuntingYard:
         """
 
         for index, token in enumerate(self.expression):
+
             try:
                 next_token = self.expression[index+1]
             except IndexError:
                 next_token = None
 
+            if token in operators and next_token in operators:  # adjacent operators cause an error
+                return "ERROR: invalid input"
+
             if token in "0123456789":
                 self.number(token, next_token)
 
+            elif token == "-":  # special case of "-"" because it can also mean a negative number
+                # if the previous token is a number this is an operation otherwise a negation
+                previous_token = None if index == 0 else self.expression[index-1]
+                if previous_token is None or previous_token not in "0123456789":
+                    self.previous["input"] += token
+                else:
+                    self.operator(token)
+
             elif token == ".":
                 try:
-                    self.period(token, next_token)
+                    self.period(token, next_token, index)
                 except InputError:
                     return "ERROR: invalid input"
 
@@ -96,7 +108,9 @@ class ShuntingYard:
             self.output.append(self.previous["input"] + token)
             self.previous["input"] = ""
 
-    def period(self, token: str, next_token):
+    def period(self, token: str, next_token, index: int):
+        if index == 0:
+            raise InputError
         if not next_token or next_token not in "0123456789":
             raise InputError
         self.previous["input"] += token
