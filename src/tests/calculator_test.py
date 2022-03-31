@@ -113,6 +113,14 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(self.calc.rpn, "ERROR: invalid input")
         self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
 
+    def test_expression_starts_with_period(self):
+        self.io.inputs = [".6+5", ""]
+
+        self.calc.start()
+
+        self.assertEqual(self.calc.rpn, "ERROR: invalid input")
+        self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
+
     def test_invalid_input(self):
         self.io.inputs = ["4€+3", ""]
 
@@ -136,3 +144,27 @@ class TestCalculator(unittest.TestCase):
 
         self.assertEqual(self.calc.rpn, "ERROR: mismatched parentheses")
         self.assertEqual(self.io.outputs[0], "ERROR: mismatched parentheses")
+
+    def test_adjacent_operators(self):
+        self.io.inputs = ["3*/5", ""]
+
+        self.calc.start()
+
+        self.assertEqual(self.calc.rpn, "ERROR: invalid input")
+        self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
+
+    def test_negative_number_first(self):
+        self.io.inputs = ["-5+6", ""]
+
+        self.calc.start()
+
+        self.assertEqual(self.calc.rpn, "-5 6 +")
+        self.assertEqual(self.io.outputs[0], 1)
+
+    def test_negative_number_in_parentheses(self):
+        self.io.inputs = ["4*(-4+8)", ""]
+
+        self.calc.start()
+
+        self.assertEqual(self.calc.rpn, "4 -4 8 + *")
+        self.assertEqual(self.io.outputs[0], 16)
