@@ -1,3 +1,6 @@
+from types import NoneType
+
+
 operators = {
     "+": {"precedence": 2, "associativity": "Left"},
     "-": {"precedence": 2, "associativity": "Left"},
@@ -91,7 +94,7 @@ class ShuntingYard:
         return " ".join(self.output)
 
     # can't define the type of next_token because it fails the CI build
-    def number(self, token: str, next_token):
+    def number(self, token: str, next_token: str | None | NoneType):
         """_summary_
 
         Args:
