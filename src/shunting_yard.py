@@ -54,19 +54,17 @@ class ShuntingYard:
             except IndexError:
                 next_token = None
 
-            if token in operators and next_token in operators:  # adjacent operators cause an error
+            try:
+                self.check_adjacent_operators(token, next_token)
+            except InputError:
                 return "ERROR: invalid input"
 
             if token in "0123456789":
                 self.number(token, next_token)
 
             elif token == "-":  # special case of "-"" because it can also mean a negative number
-                # if the previous token is a number this is an operation otherwise a negation
                 previous_token = None if index == 0 else self.expression[index-1]
-                if previous_token is None or previous_token not in "0123456789":
-                    self.previous["input"] += token
-                else:
-                    self.operator(token)
+                self.minus(token, previous_token)
 
             elif token == ".":
                 try:
@@ -152,3 +150,14 @@ class ShuntingYard:
                     self.output.append(top)
                     continue
                 break
+
+    def check_adjacent_operators(self, token, next_token):
+        if token in operators and next_token in operators:  # adjacent operators cause an error
+            raise InputError
+
+    def minus(self, token, previous_token):
+        # if the previous token is a number this is an operation otherwise a negation
+        if previous_token is None or previous_token not in "0123456789":
+            self.previous["input"] += token
+        else:
+            self.operator(token)
