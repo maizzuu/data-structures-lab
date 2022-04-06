@@ -1,6 +1,6 @@
 class CalculatorIO:
-    def read(self):
-        input_str = input("Input: ")
+    def read(self, text="Input"):
+        input_str = input(f"{text}: ")
         return input_str
 
     def write(self, output):
