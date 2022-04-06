@@ -24,7 +24,7 @@ class ShuntingYard:
         previous: A dictionary containing the previous character(s) and its type.
     """
 
-    def __init__(self, expression: str):
+    def __init__(self, expression: str, variables: dict):
         """The constructor for the ShuntingYard class.
 
         This constructor prepares the class for the parsing by creating empty lists and dict.
@@ -33,6 +33,7 @@ class ShuntingYard:
             expression (str): The expression that will be parsed.
         """
         self.expression = expression
+        self.variables = variables
         self.output = []
         self.opstack = []
         # type isn't needed until functions are included
@@ -50,10 +51,8 @@ class ShuntingYard:
 
         for index, token in enumerate(self.expression):
 
-            try:
-                next_token = self.expression[index+1]
-            except IndexError:
-                next_token = None
+            next_token = None if index == len(
+                self.expression)-1 else self.expression[index+1]
 
             try:
                 self.check_adjacent_operators(token, next_token)
@@ -81,6 +80,10 @@ class ShuntingYard:
                     self.parentheses(token)
                 except IndexError:
                     return "ERROR: mismatched parentheses"
+
+            elif token in self.variables:  # handle functions before this
+                previous_token = None if index == 0 else self.expression[index-1]
+                self.variable(token, previous_token, next_token)
 
             else:
                 return "ERROR: invalid input"
@@ -221,3 +224,11 @@ class ShuntingYard:
             if "(" in self.opstack or ")" in self.opstack:
                 raise InputError
             self.output.append(self.opstack.pop())
+
+    def variable(self, token: str, previous_token, next_token):
+        if previous_token not in operators and previous_token is not None:
+            raise InputError
+        if next_token not in operators and previous_token is not None:
+            raise InputError
+        value = self.variables[token]
+        self.output.append(value)

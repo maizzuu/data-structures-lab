@@ -1,3 +1,4 @@
+from string import ascii_lowercase
 from calculatorIO import CalculatorIO
 from shunting_yard import ShuntingYard
 from evaluator import Evaluator
@@ -24,6 +25,7 @@ class Calculator:
         """
         self.io = io
         self.rpn = ""
+        self.variables = {}
 
     def start(self):
         """Starts the calculator and is in charge of running it.
@@ -32,6 +34,8 @@ class Calculator:
         interpreting the user input and giving it for the algorithm for parsing.
         """
         while True:
+            self.io.write(
+                "Input an expression or leave empty to exit, type help for instructions")
             expression = self.io.read()
             print()
             if expression == "":
@@ -39,9 +43,11 @@ class Calculator:
                 break
             if expression == "help":
                 self.instructions()
+            if expression == "var":
+                self.variable_menu()
             else:
                 # a new instance created for each expression
-                self.rpn = ShuntingYard(expression).parse()
+                self.rpn = ShuntingYard(expression, self.variables).parse()
                 try:
                     result = Evaluator(self.rpn).evaluate()
                     self.io.write(result)
@@ -54,3 +60,57 @@ class Calculator:
         self.io.write("instructions")
         # instrcutions to be added:
         # use periods to indicate decimal places
+        # type "var" to open the variable menu
+        # var names can only include lowercase letters
+        # var name max len is 1
+        # var value can only be a number
+
+    def variable_menu(self):
+        while True:
+            self.io.write(
+                """Type 'set' to set a variable, 'list' to list all variables,
+                'del' to remove one, leave empty to return""")
+            input_str = self.io.read()
+
+            if input_str == "":
+                break
+
+            elif input_str == "list":
+                for key, value in self.variables.items():
+                    print(f"{key} = {value}")
+
+            elif input_str == "set":
+                while True:
+                    self.io.write("Input variable name")
+                    name = self.io.read()
+                    if self.check_var_name(name):
+                        break
+                while True:
+                    self.io.write("Input variable value")
+                    value = self.io.read()
+                    if self.check_var_value(value):
+                        break
+                self.variables[name] = value
+
+            elif input_str == "del":
+                self.io.write("Input variable name")
+                name = self.io.read()
+                try:
+                    self.variables.pop(name)
+                except KeyError:
+                    self.io.write(f"Variable name {name} not found")
+
+    def check_var_name(self, name):
+        if len(name) != 1:
+            return False
+        if name not in ascii_lowercase:
+            return False
+        return True
+
+    def check_var_value(self, value):
+        for index, token in enumerate(value):
+            if token not in "0123456789":
+                if token == "-" and index == 0:
+                    continue
+                return False
+        return True
