@@ -34,9 +34,8 @@ class Calculator:
         interpreting the user input and giving it for the algorithm for parsing.
         """
         while True:
-            self.io.write(
-                "Input an expression or leave empty to exit, type help for instructions")
-            expression = self.io.read()
+            expression = self.io.read(
+                "Input an expression, empty to exit, help for instructions, var for variables")
             print()
             if expression == "":
                 self.io.write("Quitting calculator")
@@ -67,38 +66,33 @@ class Calculator:
 
     def variable_menu(self):
         while True:
-            self.io.write(
-                """Type 'set' to set a variable, 'list' to list all variables,
-                'del' to remove one, leave empty to return""")
-            input_str = self.io.read()
+            input_str = self.io.read(
+                "Input 'set', 'list', 'del' or empty to exit")
 
             if input_str == "":
                 break
 
-            elif input_str == "list":
+            if input_str == "list":
                 for key, value in self.variables.items():
-                    print(f"{key} = {value}")
+                    self.io.write(f"{key} = {value}")
 
             elif input_str == "set":
                 while True:
-                    self.io.write("Input variable name")
-                    name = self.io.read()
+                    name = self.io.read("Input variable name")
                     if self.check_var_name(name):
                         break
                 while True:
-                    self.io.write("Input variable value")
-                    value = self.io.read()
+                    value = self.io.read("Input variable value")
                     if self.check_var_value(value):
                         break
                 self.variables[name] = value
 
             elif input_str == "del":
-                self.io.write("Input variable name")
-                name = self.io.read()
+                name = self.io.read("Input variable name")
                 try:
                     self.variables.pop(name)
                 except KeyError:
-                    self.io.write(f"Variable name {name} not found")
+                    self.io.write(f"Variable {name} not found")
 
     def check_var_name(self, name):
         if len(name) != 1:
