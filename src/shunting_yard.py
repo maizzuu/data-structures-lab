@@ -83,7 +83,10 @@ class ShuntingYard:
 
             elif token in self.variables:  # handle functions before this
                 previous_token = None if index == 0 else self.expression[index-1]
-                self.variable(token, previous_token, next_token)
+                try:
+                    self.variable(token, previous_token, next_token)
+                except InputError:
+                    return "ERROR: invalid input"
 
             else:
                 return "ERROR: invalid input"
@@ -228,7 +231,7 @@ class ShuntingYard:
     def variable(self, token: str, previous_token, next_token):
         if previous_token not in operators and previous_token is not None:
             raise InputError
-        if next_token not in operators and previous_token is not None:
+        if next_token not in operators and next_token is not None:
             raise InputError
         value = self.variables[token]
         self.output.append(value)
