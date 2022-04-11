@@ -1,4 +1,5 @@
-from shunting_yard import operators
+from math import cos, exp, log, sin, sqrt, tan
+from shunting_yard import operators, functions
 
 
 class Evaluator:
@@ -27,16 +28,20 @@ class Evaluator:
         if len(self.expression) == 1:
             return int(self.expression[0])
         for token in self.expression:
-            if token not in operators:
-                try:
-                    self.operands.append(int(token))
-                except ValueError:
-                    self.operands.append(float(token))
-            else:
+            if token in functions:
+                x = self.operands.pop()
+                result = self.function(token, x)
+                self.operands.append(result)
+            elif token in operators:
                 second = self.operands.pop()
                 first = self.operands.pop()
                 result = self.calculate(token, first, second)
                 self.operands.append(result)
+            else:
+                try:
+                    self.operands.append(int(token))
+                except ValueError:
+                    self.operands.append(float(token))
         return self.operands.pop()
 
     def calculate(self, operator: str, first: int, second: int) -> int:
@@ -51,11 +56,32 @@ class Evaluator:
             int: The result of the operation.
         """
         if operator == "+":
-            return first + second
-        if operator == "-":
-            return first - second
-        if operator == "*":
-            return first * second
-        if operator == "/":
-            return round(first / second, 3)
-        return first ** second  # if operator == "^"
+            result = first + second
+        elif operator == "-":
+            result = first - second
+        elif operator == "*":
+            result = first * second
+        elif operator == "/":
+            result = first / second
+        elif operator == "^":
+            result = first ** second
+        return round(result, 3)
+
+    def function(self, name: str, x: int) -> int:
+        if name == "cos":
+            result = cos(x)
+        elif name == "exp":
+            result = exp(x)
+        elif name == "lb":
+            result = log(x, base=2)
+        elif name == "lg":
+            result = log(x, base=10)
+        elif name == "ln":
+            result = log(x)
+        elif name == "sin":
+            result = sin(x)
+        elif name == "sqrt":
+            result = sqrt(x)
+        elif name == "tan":
+            result = tan(x)
+        return round(result, 3)
