@@ -22,15 +22,15 @@ functions = {
 }
 
 
-class InputError(Exception):
-    pass
-
-
 class InvalidInputError(Exception):
     pass
 
 
 class UnknownInputError(Exception):
+    pass
+
+
+class MismatchedParenthesesError(Exception):
     pass
 
 
@@ -77,10 +77,7 @@ class ShuntingYard:
                 self.expression)-1 else self.expression[index+1]
             previous_token = None if index == 0 else self.expression[index-1]
 
-            try:
-                self.check_adjacent_operators(token, next_token)
-            except InputError:
-                return "ERROR: invalid input"
+            self.check_adjacent_operators(token, next_token)
 
             if token in "0123456789":
                 self.number(token, next_token)
@@ -89,35 +86,21 @@ class ShuntingYard:
                 self.minus(token, previous_token)
 
             elif token == ".":
-                try:
-                    self.period(token, next_token, index)
-                except InputError:
-                    return "ERROR: invalid input"
+                self.period(token, next_token, index)
 
             elif token in operators:
                 self.operator(token)
 
             elif token in ("(", ")"):
-                try:
-                    self.parentheses(token)
-                except IndexError:
-                    return "ERROR: mismatched parentheses"
+                self.parentheses(token)
 
             elif token in ascii_lowercase:
-                try:
-                    self.letter(token, next_token, previous_token)
-                except UnknownInputError:
-                    return "ERROR: unknown input"
-                except InvalidInputError:
-                    return "ERROR: invalid input"
+                self.letter(token, next_token, previous_token)
 
             else:
-                return "ERROR: invalid input"
+                raise InvalidInputError
 
-        try:
-            self.finish()
-        except InputError:
-            return "ERROR: mismatched parentheses"
+        self.finish()
 
         return " ".join(self.output)
 
@@ -151,13 +134,13 @@ class ShuntingYard:
             index (int): The index of the current token.
 
         Raises:
-            InputError: The first InputError will be raised if the expression starts with a period.
-            InputError: The second InputError will be raised if next_token isn't a number.
+            InvalidInputError: Will be raised if the expression starts with a period.
+            InvalidInputError: Will be raised if next_token isn't a number.
         """
         if index == 0:
-            raise InputError
+            raise InvalidInputError
         if not next_token or next_token not in "0123456789":
-            raise InputError
+            raise InvalidInputError
         self.previous += token
 
     def operator(self, token: str):
@@ -218,10 +201,10 @@ class ShuntingYard:
             next_token (str | None): The next token.
 
         Raises:
-            InputError: Error raised when token and next_token are both operators.
+            InvalidInputError: Error raised when token and next_token are both operators.
         """
         if token in operators and next_token in operators:  # adjacent operators cause an error
-            raise InputError
+            raise InvalidInputError
 
     def minus(self, token: str, previous_token):
         """A method for handling a minus token.
@@ -250,7 +233,7 @@ class ShuntingYard:
         """
         while self.opstack:
             if "(" in self.opstack or ")" in self.opstack:
-                raise InputError
+                raise MismatchedParenthesesError
             self.output.append(self.opstack.pop())
 
     def letter(self, token: str, next_token, previous_token):

@@ -1,6 +1,9 @@
 from string import ascii_lowercase
 from calculatorIO import CalculatorIO
-from shunting_yard import ShuntingYard
+from shunting_yard import (InvalidInputError,
+                           MismatchedParenthesesError,
+                           ShuntingYard,
+                           UnknownInputError)
 from evaluator import Evaluator
 
 
@@ -45,13 +48,20 @@ class Calculator:
             if expression == "var":
                 self.variable_menu()
             else:
-                # a new instance created for each expression
-                self.rpn = ShuntingYard(expression, self.variables).parse()
                 try:
+                    self.rpn = ShuntingYard(expression, self.variables).parse()
                     result = Evaluator(self.rpn).evaluate()
                     self.io.write(result)
-                except ValueError:  # for when rpn is actually an error message
-                    self.io.write(self.rpn)
+                except InvalidInputError:
+                    self.io.write("ERROR: invalid input")
+                except ValueError:
+                    self.io.write("ERROR: invalid input")
+                except UnknownInputError:
+                    self.io.write("ERROR: unknown input")
+                except IndexError:
+                    self.io.write("ERROR: mismatched parentheses")
+                except MismatchedParenthesesError:
+                    self.io.write("ERROR: mismatched parentheses")
 
     def instructions(self):
         """Uses the IO to print out instructions for the calculator.
@@ -61,8 +71,8 @@ class Calculator:
         # use periods to indicate decimal places
         # type "var" to open the variable menu
         # var names can only include lowercase letters
-        # var name max len is 1
         # var value can only be a number
+        # functions must always be followed by a left parenthesis, i.e. "ln 2" is not ok
 
     def variable_menu(self):
         while True:

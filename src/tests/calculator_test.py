@@ -7,7 +7,7 @@ class StubIO:
         self.inputs = inputs
         self.outputs = []
 
-    def read(self, text):
+    def read(self, text):  # attr text not needed
         return self.inputs.pop(0)
 
     def write(self, output):
@@ -94,7 +94,6 @@ class TestCalculator(unittest.TestCase):
 
         self.calc.start()
 
-        self.assertEqual(self.calc.rpn, "ERROR: mismatched parentheses")
         self.assertEqual(self.io.outputs[0], "ERROR: mismatched parentheses")
 
     def test_input_with_decimal(self):
@@ -110,7 +109,6 @@ class TestCalculator(unittest.TestCase):
 
         self.calc.start()
 
-        self.assertEqual(self.calc.rpn, "ERROR: invalid input")
         self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
 
     def test_expression_starts_with_period(self):
@@ -118,7 +116,6 @@ class TestCalculator(unittest.TestCase):
 
         self.calc.start()
 
-        self.assertEqual(self.calc.rpn, "ERROR: invalid input")
         self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
 
     def test_invalid_input(self):
@@ -126,7 +123,6 @@ class TestCalculator(unittest.TestCase):
 
         self.calc.start()
 
-        self.assertEqual(self.calc.rpn, "ERROR: invalid input")
         self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
 
     def test_parentheses(self):
@@ -142,7 +138,6 @@ class TestCalculator(unittest.TestCase):
 
         self.calc.start()
 
-        self.assertEqual(self.calc.rpn, "ERROR: mismatched parentheses")
         self.assertEqual(self.io.outputs[0], "ERROR: mismatched parentheses")
 
     def test_adjacent_operators(self):
@@ -150,7 +145,6 @@ class TestCalculator(unittest.TestCase):
 
         self.calc.start()
 
-        self.assertEqual(self.calc.rpn, "ERROR: invalid input")
         self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
 
     def test_negative_number_first(self):
