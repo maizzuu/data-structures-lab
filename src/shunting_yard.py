@@ -1,4 +1,7 @@
 
+from string import ascii_lowercase
+
+
 operators = {
     "+": {"precedence": 2, "associativity": "Left"},
     "-": {"precedence": 2, "associativity": "Left"},
@@ -7,8 +10,27 @@ operators = {
     "^": {"precedence": 4, "associativity": "Right"}
 }
 
+functions = {
+    "cos": {"precedence": 1, "associativity": "Left"},
+    "exp": {"precedence": 1, "associativity": "Left"},
+    "lb": {"precedence": 1, "associativity": "Left"},
+    "lg": {"precedence": 1, "associativity": "Left"},
+    "ln": {"precedence": 1, "associativity": "Left"},
+    "sin": {"precedence": 1, "associativity": "Left"},
+    "sqrt": {"precedence": 1, "associativity": "Left"},
+    "tan": {"precedence": 1, "associativity": "Left"},
+}
+
 
 class InputError(Exception):
+    pass
+
+
+class InvalidInputError(Exception):
+    pass
+
+
+class UnknownInputError(Exception):
     pass
 
 
@@ -37,7 +59,7 @@ class ShuntingYard:
         self.output = []
         self.opstack = []
         # type isn't needed until functions are included
-        self.previous = {"input": "", "type": ""}
+        self.previous = ""
 
     def parse(self) -> str:
         """Method that is in charge of parsing the expression and returning the final output.
@@ -53,6 +75,7 @@ class ShuntingYard:
 
             next_token = None if index == len(
                 self.expression)-1 else self.expression[index+1]
+            previous_token = None if index == 0 else self.expression[index-1]
 
             try:
                 self.check_adjacent_operators(token, next_token)
@@ -63,7 +86,6 @@ class ShuntingYard:
                 self.number(token, next_token)
 
             elif token == "-":  # special case of "-"" because it can also mean a negative number
-                previous_token = None if index == 0 else self.expression[index-1]
                 self.minus(token, previous_token)
 
             elif token == ".":
@@ -81,11 +103,12 @@ class ShuntingYard:
                 except IndexError:
                     return "ERROR: mismatched parentheses"
 
-            elif token in self.variables:  # handle functions before this
-                previous_token = None if index == 0 else self.expression[index-1]
+            elif token in ascii_lowercase:
                 try:
-                    self.variable(token, previous_token, next_token)
-                except InputError:
+                    self.letter(token, next_token, previous_token)
+                except UnknownInputError:
+                    return "ERROR: unknown input"
+                except InvalidInputError:
                     return "ERROR: invalid input"
 
             else:
@@ -110,12 +133,12 @@ class ShuntingYard:
             next_token(str | None): The next token.
         """
         if not next_token:
-            self.output.append(self.previous["input"] + token)
+            self.output.append(self.previous + token)
         elif next_token in ".0123456789":
-            self.previous["input"] += token
+            self.previous += token
         else:
-            self.output.append(self.previous["input"] + token)
-            self.previous["input"] = ""
+            self.output.append(self.previous + token)
+            self.previous = ""
 
     def period(self, token: str, next_token, index: int):
         """A method for handling a period token.
@@ -135,7 +158,7 @@ class ShuntingYard:
             raise InputError
         if not next_token or next_token not in "0123456789":
             raise InputError
-        self.previous["input"] += token
+        self.previous += token
 
     def operator(self, token: str):
         """A method for handling an operator token.
@@ -188,6 +211,8 @@ class ShuntingYard:
     def check_adjacent_operators(self, token: str, next_token):
         """A method for checking whether an operator is followed by another one.
 
+        Returns None if token is a parenthesis.
+
         Args:
             token (str): The current token.
             next_token (str | None): The next token.
@@ -210,7 +235,7 @@ class ShuntingYard:
         """
         # if the previous token is a number this is an operation otherwise a negation
         if previous_token is None or previous_token not in "0123456789":
-            self.previous["input"] += token
+            self.previous += token
         else:
             self.operator(token)
 
@@ -228,10 +253,40 @@ class ShuntingYard:
                 raise InputError
             self.output.append(self.opstack.pop())
 
-    def variable(self, token: str, previous_token, next_token):
-        if previous_token not in operators and previous_token is not None:
-            raise InputError
-        if next_token not in operators and next_token is not None:
-            raise InputError
-        value = self.variables[token]
-        self.output.append(value)
+    def letter(self, token: str, next_token, previous_token):
+
+        # "+a+" (has to be a variable, no functions of length 1)
+        if str(previous_token) not in ascii_lowercase and str(next_token) not in ascii_lowercase:
+            if token not in self.variables:
+                raise UnknownInputError
+            if ((previous_token is not None and previous_token not in "+-*/^()")
+                    or (next_token is not None and next_token not in "+-*/^()")):  # "3a"
+                raise InvalidInputError
+            value = self.variables[token]
+            self.output.append(value)
+
+        # "+ab"
+        elif str(previous_token) not in ascii_lowercase and str(next_token) in ascii_lowercase:
+            if previous_token is not None and previous_token not in "+-*/^()":  # "3ab" or "3"
+                raise InvalidInputError
+            self.previous += token
+
+        # "ab+"
+        elif str(previous_token) in ascii_lowercase and str(next_token) not in ascii_lowercase:
+            full_str = self.previous + token
+            self.previous = ""
+            if full_str in self.variables:
+                if next_token is not None and next_token not in "+-*/^()":  # "ab3"
+                    raise InvalidInputError
+                value = self.variables[full_str]
+                self.output.append(value)
+            elif full_str in functions:
+                if next_token != "(":  # "ln3" or "ln+"
+                    raise InvalidInputError
+                self.operator(full_str)
+            else:
+                raise UnknownInputError
+
+        # "abc"
+        elif str(previous_token) in ascii_lowercase and str(next_token) in ascii_lowercase:
+            self.previous += token
