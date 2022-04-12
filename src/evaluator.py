@@ -25,8 +25,6 @@ class Evaluator:
         Returns:
             int: Returns the final result of the equation.
         """
-        if len(self.expression) == 1:
-            return int(self.expression[0])
         for token in self.expression:
             if token in functions:
                 x = self.operands.pop()
@@ -42,7 +40,7 @@ class Evaluator:
                     self.operands.append(int(token))
                 except ValueError:
                     self.operands.append(float(token))
-        return self.operands.pop()
+        return round(self.operands.pop(), 3)
 
     def calculate(self, operator: str, first: int, second: int) -> int:
         """This method returns the result of one operation.
@@ -63,9 +61,9 @@ class Evaluator:
             result = first * second
         elif operator == "/":
             result = first / second
-        elif operator == "^":
+        else:  # operator == "^":
             result = first ** second
-        return round(result, 3)
+        return result
 
     def function(self, name: str, x: int) -> int:
         if name == "cos":
@@ -73,15 +71,21 @@ class Evaluator:
         elif name == "exp":
             result = exp(x)
         elif name == "lb":
-            result = log(x, base=2)
+            result = log(x, 2)
         elif name == "lg":
-            result = log(x, base=10)
+            result = log(x, 10)
         elif name == "ln":
             result = log(x)
         elif name == "sin":
             result = sin(x)
         elif name == "sqrt":
             result = sqrt(x)
-        elif name == "tan":
+        else:  # name == "tan":
             result = tan(x)
-        return round(result, 3)
+        return result
+
+    def set_expression(self, expression: str):
+        self.expression = expression.split(" ")
+
+
+# if __name__ == "__main__":
