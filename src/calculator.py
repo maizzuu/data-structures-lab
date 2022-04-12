@@ -1,5 +1,5 @@
 from string import ascii_lowercase
-from calculatorIO import CalculatorIO
+from calculator_io import CalculatorIO
 from shunting_yard import (InvalidInputError,
                            MismatchedParenthesesError,
                            ShuntingYard,
@@ -34,7 +34,7 @@ class Calculator:
         """Starts the calculator and is in charge of running it.
 
         Is also in charge of asking the IO for inputs and giving it outputs, as well as
-        interpreting the user input and giving it for the algorithm for parsing.
+        interpreting the user input and giving it to the algorithm for parsing.
         """
         while True:
             expression = self.io.read(
@@ -105,10 +105,9 @@ class Calculator:
                     self.io.write(f"Variable {name} not found")
 
     def check_var_name(self, name):
-        if len(name) != 1:
-            return False
-        if name not in ascii_lowercase:
-            return False
+        for letter in name:
+            if letter not in ascii_lowercase:
+                return False
         return True
 
     def check_var_value(self, value):
