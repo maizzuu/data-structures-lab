@@ -96,3 +96,38 @@ class TestCalculator(unittest.TestCase):
         self.calc.start()
 
         self.assertEqual(self.io.outputs[1], "beta = 3")
+
+    def test_expression(self):
+        self.io.set_inputs(["1+2"])
+
+        self.calc.start()
+
+        self.assertEqual(self.io.outputs[0], 3)
+
+    def test_invalid_error(self):
+        self.io.set_inputs(["1,2"])
+
+        self.calc.start()
+
+        self.assertEqual(self.io.outputs[0], "ERROR: invalid input")
+
+    def test_unknown_input(self):
+        self.io.set_inputs(["1+aaaaaa"])
+
+        self.calc.start()
+
+        self.assertEqual(self.io.outputs[0], "ERROR: unknown input")
+
+    def test_index_error(self):
+        self.io.set_inputs(["(1+2))"])
+
+        self.calc.start()
+
+        self.assertEqual(self.io.outputs[0], "ERROR: mismatched parentheses")
+
+    def test_parentheses_error(self):
+        self.io.set_inputs(["(1+2)("])
+
+        self.calc.start()
+
+        self.assertEqual(self.io.outputs[0], "ERROR: mismatched parentheses")
