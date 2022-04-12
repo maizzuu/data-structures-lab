@@ -54,8 +54,6 @@ class Calculator:
                     self.io.write(result)
                 except InvalidInputError:
                     self.io.write("ERROR: invalid input")
-                except ValueError:
-                    self.io.write("ERROR: invalid input")
                 except UnknownInputError:
                     self.io.write("ERROR: unknown input")
                 except IndexError:
