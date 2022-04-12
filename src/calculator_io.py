@@ -6,3 +6,6 @@ class CalculatorIO:
     def write(self, output):
         print(output)
         print()
+
+
+calculator_io = CalculatorIO()
