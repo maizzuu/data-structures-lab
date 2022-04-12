@@ -1,5 +1,5 @@
 from string import ascii_lowercase
-from calculator_io import CalculatorIO
+from calculator_io import calculator_io as default_io
 from shunting_yard import (InvalidInputError,
                            MismatchedParenthesesError,
                            ShuntingYard,
@@ -19,7 +19,7 @@ class Calculator:
         io: Class instance for inputs and outputs. The default value is of the CalculatorI0 class.
     """
 
-    def __init__(self, io=CalculatorIO()):
+    def __init__(self, io=default_io):
         """The constructor for this class. It creates an instance of the IO-class.
 
         Args:
@@ -87,15 +87,7 @@ class Calculator:
                     self.io.write(f"{key} = {value}")
 
             elif input_str == "set":
-                while True:
-                    name = self.io.read("Input variable name")
-                    if self.check_var_name(name):
-                        break
-                while True:
-                    value = self.io.read("Input variable value")
-                    if self.check_var_value(value):
-                        break
-                self.variables[name] = value
+                self.set_variable()
 
             elif input_str == "del":
                 name = self.io.read("Input variable name")
@@ -103,6 +95,8 @@ class Calculator:
                     self.variables.pop(name)
                 except KeyError:
                     self.io.write(f"Variable {name} not found")
+            else:
+                continue
 
     def check_var_name(self, name):
         for letter in name:
@@ -117,3 +111,16 @@ class Calculator:
                     continue
                 return False
         return True
+
+    def set_variable(self):
+        while True:
+            name = self.io.read("Input variable name")
+            if self.check_var_name(name):
+                break
+        while True:
+            value = self.io.read("Input variable value")
+            if self.check_var_value(value):
+                break
+        if name == "" or value == "":
+            return
+        self.variables[name] = value
