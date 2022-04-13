@@ -20,7 +20,7 @@ The time complexity is O(n), where n is the length of the expression. The space 
 
 ## Possible flaws and improvements
 
-Currently inputs like -(1+1) do not work.
+The calculator should work with all kinds of inputs but it is very much possible that I have not tested a certain kind of input that won't work.
 
 ## Sources
 
