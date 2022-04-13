@@ -8,6 +8,7 @@
 - [Project specification](https://github.com/maizzuu/data-structures-lab/blob/main/documentation/project_specification.md)
 - [Implementation document](https://github.com/maizzuu/data-structures-lab/blob/main/documentation/implementation_document.md)
 - [Testing document](https://github.com/maizzuu/data-structures-lab/blob/main/documentation/testing_document.md)
+- [User guide](https://github.com/maizzuu/data-structures-lab/blob/main/documentation/user_guide.md)
 
 ### Weekly reports:
 
