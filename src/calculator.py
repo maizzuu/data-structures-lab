@@ -65,7 +65,7 @@ class Calculator:
         """Uses the IO to print out instructions for the calculator.
         """
         self.io.write("instructions")
-        # instrcutions to be added:
+        # instrcutions to be added once I have all of them figured out:
         # use periods to indicate decimal places
         # type "var" to open the variable menu
         # var names can only include lowercase letters
@@ -73,6 +73,10 @@ class Calculator:
         # functions must always be followed by a left parenthesis, i.e. "ln 2" is not ok
 
     def variable_menu(self):
+        """Method for implementing the variable menu.
+
+        Will either list variables, set one or delete one.
+        """
         while True:
             input_str = self.io.read(
                 "Input 'set', 'list', 'del' or empty to exit")
@@ -89,20 +93,35 @@ class Calculator:
 
             elif input_str == "del":
                 name = self.io.read("Input variable name")
-                try:
-                    self.variables.pop(name)
-                except KeyError:
-                    self.io.write(f"Variable {name} not found")
+                self.del_variable(name)
+
             else:
                 continue
 
-    def check_var_name(self, name):
+    def check_var_name(self, name: str) -> bool:
+        """Checks that the name consists of lowercase letters.
+
+        Args:
+            name (str): The name of the variable.
+
+        Returns:
+            bool: False if name is invalid, otherwise True.
+        """
         for letter in name:
             if letter not in ascii_lowercase:
                 return False
         return True
 
-    def check_var_value(self, value):
+    def check_var_value(self, value: str) -> bool:
+        """Checks that the value consists of numbers
+
+        Args:
+            value (str): The value of the variable as a string
+                        everything is handled as strings until final calculations.
+
+        Returns:
+            bool: False if value is invalid, otherwise True.
+        """
         for index, token in enumerate(value):
             if token not in "0123456789":
                 if token == "-" and index == 0:
@@ -111,6 +130,8 @@ class Calculator:
         return True
 
     def set_variable(self):
+        """Gets user inputs and stores the variable.
+        """
         while True:
             name = self.io.read("Input variable name")
             if self.check_var_name(name):
@@ -122,3 +143,14 @@ class Calculator:
         if name == "" or value == "":
             return
         self.variables[name] = value
+
+    def del_variable(self, name: str):
+        """Deletes a variable.
+
+        Args:
+            name (str): The name of the variable.
+        """
+        try:
+            self.variables.pop(name)
+        except KeyError:
+            self.io.write(f"Variable {name} not found")

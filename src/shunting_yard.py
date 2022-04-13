@@ -40,9 +40,11 @@ class ShuntingYard:
 
     Attributes:
         expression: The expression which will be parsed.
+        variables: The variables that have been set.
         output: A list that for storing the output as the algorithm parses the input.
         opstack: A list that is used to store operators.
-        previous: A dictionary containing the previous character(s) and its type.
+        funcstack: A list that is used to store functions.
+        previous: A string containing the previous character(s).
     """
 
     def __init__(self, expression: str, variables: dict):
@@ -51,7 +53,8 @@ class ShuntingYard:
         This constructor prepares the class for the parsing by creating empty lists and dict.
 
         Args:
-            expression (str): The expression that will be parsed.
+            expression (str): The expression in infix notation.
+            variables (dict): Variables currently stored.
         """
         self.expression = expression
         self.variables = variables
@@ -66,8 +69,12 @@ class ShuntingYard:
         This method will go through each token in the expression, check its type and
         handle it accordingly, also check the expression for any invalidities.
 
+
+        Raises:
+            InvalidInputError: Raised when the expression contains an unsuitable character.
+
         Returns:
-            str: The given expression in reverse polish notation.
+            str: The expression in postfix (reverse Polish) notation.
         """
 
         for index, token in enumerate(self.expression):
@@ -225,7 +232,7 @@ class ShuntingYard:
         any parentheses remain and adding operators to the output.
 
         Raises:
-            InputError: Raised when there is a parenthesis left in the stack.
+            MismatchedParenthesesError: Raised when there is a parenthesis left in the stack.
         """
         while self.opstack:
             if "(" in self.opstack or ")" in self.opstack:
@@ -233,7 +240,21 @@ class ShuntingYard:
             self.output.append(self.opstack.pop())
 
     def letter(self, token: str, next_token, previous_token):
+        """This method handles a letter token based on what kind the preceding and following tokens are of.
 
+        Args:
+            token (str): The current token (a letter)
+            next_token (str | None): The next token.
+            previous_token (str | None): The previous token.
+
+        Raises:
+            UnknownInputError: When a variable with a certain name hasn't been set.
+            InvalidInputError: A number precedes or follows a one-letter var.
+            InvalidInputError: A number precedes a variable/function.
+            InvalidInputError: A number follows a variable/function.
+            InvalidInputError: The preceding or following token is not of one of the allowed types.
+            UnknownInputError: _description_
+        """
         # "+a+" (has to be a variable, no functions of length 1)
         if str(previous_token) not in ascii_lowercase and str(next_token) not in ascii_lowercase:
             if token not in self.variables:
@@ -246,7 +267,7 @@ class ShuntingYard:
 
         # "+ab"
         elif str(previous_token) not in ascii_lowercase and str(next_token) in ascii_lowercase:
-            if previous_token is not None and previous_token not in "+-*/^()":  # "3ab" or "3"
+            if previous_token is not None and previous_token not in "+-*/^()":
                 raise InvalidInputError
             self.previous += token
 
