@@ -144,3 +144,10 @@ class TestShuntingYard(unittest.TestCase):
 
         with self.assertRaises(UnknownInputError):
             self.shunting_yard.parse()
+
+    def test_input_minus_and_parentheses(self):
+        self.shunting_yard.expression = "-(2+1)"
+
+        result = self.shunting_yard.parse()
+
+        self.assertEqual(result, "0 2 1 + -")
