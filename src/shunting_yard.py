@@ -220,7 +220,10 @@ class ShuntingYard:
             token (str): The current token, a minus sign.
             previous_token (str | None): The previous token.
         """
-        if previous_token is None or previous_token not in "0123456789)":
+        if previous_token is None and next_token == "(":
+            self.output.append("0")
+            self.operator(token)
+        elif previous_token is None or previous_token not in "0123456789)":
             self.previous += token
         else:
             self.operator(token)
@@ -240,7 +243,7 @@ class ShuntingYard:
             self.output.append(self.opstack.pop())
 
     def letter(self, token: str, next_token, previous_token):
-        """This method handles a letter token based on what kind the preceding and following tokens are of.
+        """Handles a letter based on what kind the preceding and following tokens are of.
 
         Args:
             token (str): The current token (a letter)
