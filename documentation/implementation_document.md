@@ -9,7 +9,7 @@ Right now the project consists of four different classes:
 - `ShuntingYard` contains the shunting-yard algorithm. It takes an infix expression as a parameter and returns it in reverse Polish notation.
 - `Evaluator` calculates the final result of the expression.
 
-`index.py` is used to start the calculator from the terminal, and all unit tests are in the `TestCalculator` class.
+`index.py` is used to start the calculator from the terminal, and all unit tests under the `tests` directory.
 
 ## Implemented time and space complexities
 
@@ -23,4 +23,5 @@ The time complexity is O(n), where n is the length of the expression. The space 
 todo
 
 ## Sources
+
 The screenshot of the pseudocode is from [this](https://en.wikipedia.org/wiki/Shunting-yard_algorithm#The_algorithm_in_detail) Wikipedia article.

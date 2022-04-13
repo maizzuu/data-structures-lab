@@ -2,7 +2,7 @@
 
 ## Unit tests
 
-The unit tests were done with the unittest library. The tested files were `calculator.py`, `evaluator.py` and `shunting_yard.py`. The tests include different kinds of inputs, both valid and invalid ones. They also test that rounding answers works and that error messages work. Also all variable actions, such as storing and listing are tested. A stub IO class was created to inject inputs and check outputs.  
+The unit tests were done with the unittest library. The tested files are `calculator.py`, `evaluator.py` and `shunting_yard.py`. The tests include different kinds of inputs, both valid and invalid ones. They also test that rounding answers works and that correct errors are raised. Also all variable actions, such as storing and listing are tested. A stub IO class is used for testing `calculator.py`.  
 The tests can be run and a coverage report created by running
 
 `poetry run invoke coverage-report`
