@@ -60,6 +60,8 @@ class Calculator:
                     self.io.write("ERROR: mismatched parentheses")
                 except MismatchedParenthesesError:
                     self.io.write("ERROR: mismatched parentheses")
+                except ZeroDivisionError:
+                    self.io.write("ERROR: division by zero")
 
     def instructions(self):
         """Uses the IO to print out instructions for the calculator.

@@ -131,3 +131,10 @@ class TestCalculator(unittest.TestCase):
         self.calc.start()
 
         self.assertEqual(self.io.outputs[0], "ERROR: mismatched parentheses")
+
+    def test_zero_division_error(self):
+        self.io.set_inputs(["3/(1-1)"])
+
+        self.calc.start()
+
+        self.assertEqual(self.io.outputs[0], "ERROR: division by zero")
