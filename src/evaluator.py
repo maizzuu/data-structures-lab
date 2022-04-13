@@ -19,7 +19,7 @@ class Evaluator:
         self.expression = expression.split(" ")
         self.operands = []
 
-    def evaluate(self) -> int | float:
+    def evaluate(self) -> float:
         """This method iterates the equation and is in charge of handling the tokens.
 
         Returns:
@@ -42,7 +42,7 @@ class Evaluator:
                     self.operands.append(float(token))
         return round(self.operands.pop(), 3)
 
-    def calculate(self, operator: str, first: int, second: int) -> int | float:
+    def calculate(self, operator: str, first: int, second: int) -> float:
         """This method returns the result of one operation.
 
         Args:
@@ -51,7 +51,7 @@ class Evaluator:
             second (int): The second operand.
 
         Returns:
-            int | float: The result of the operation.
+            float: The result of the operation.
         """
         if operator == "+":
             result = first + second
@@ -63,9 +63,9 @@ class Evaluator:
             result = first / second
         else:  # operator == "^":
             result = first ** second
-        return result
+        return float(result)
 
-    def function(self, name: str, x: int) -> int | float:
+    def function(self, name: str, x: int) -> float:
         """Calculates the result of different functions.
 
         Args:
@@ -73,7 +73,7 @@ class Evaluator:
             x (int): The input for the function.
 
         Returns:
-            int | float: The result of the function.
+            float: The result of the function.
         """
         if name == "cos":
             result = cos(x)
@@ -91,7 +91,7 @@ class Evaluator:
             result = sqrt(x)
         else:  # name == "tan":
             result = tan(x)
-        return result
+        return float(result)
 
     def set_expression(self, expression: str):
         """Sets the expression, used for testing purposes.
