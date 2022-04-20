@@ -45,7 +45,7 @@ class Calculator:
                 break
             if expression == "help":
                 self.instructions()
-            if expression == "var":
+            elif expression == "var":
                 self.variable_menu()
             else:
                 try:
