@@ -7,6 +7,8 @@ The tests can be run and a coverage report created by running
 
 `poetry run invoke coverage-report`
 
-After that the report can be found from htmlcov/index.html, or it can be opened with the command
+### Coverage report
+
+After running the tests, the report can be found in htmlcov/index.html, or it can be opened with the command
 
 `poetry run invoke open-report`
