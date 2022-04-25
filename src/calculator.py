@@ -50,6 +50,7 @@ class Calculator:
             else:
                 try:
                     self.rpn = ShuntingYard(expression, self.variables).parse()
+                    # self.io.write(self.rpn)
                     result = Evaluator(self.rpn).evaluate()
                     self.io.write(result)
                 except InvalidInputError:
@@ -66,13 +67,7 @@ class Calculator:
     def instructions(self):
         """Uses the IO to print out instructions for the calculator.
         """
-        self.io.write("instructions")
-        # instrcutions to be added once I have all of them figured out:
-        # use periods to indicate decimal places
-        # type "var" to open the variable menu
-        # var names can only include lowercase letters
-        # var value can only be a number
-        # functions must always be followed by a left parenthesis, i.e. "ln 2" is not ok
+        self.io.print_instructions()
 
     def variable_menu(self):
         """Method for implementing the variable menu.
@@ -125,10 +120,14 @@ class Calculator:
             bool: False if value is invalid, otherwise True.
         """
         for index, token in enumerate(value):
-            if token not in "0123456789":
+            if token == "." and index in (0, len(value)-1):
+                return False
+            if token not in "0123456789.":
                 if token == "-" and index == 0:
                     continue
                 return False
+        if value.count(".") > 1:
+            return False
         return True
 
     def set_variable(self):
