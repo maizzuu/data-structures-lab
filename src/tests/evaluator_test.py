@@ -34,6 +34,13 @@ class TestEvaluator(unittest.TestCase):
 
         self.assertEqual(result, 5.5)
 
+    def test_abs(self):
+        self.eval.set_expression("-3 abs 4 +")
+
+        result = self.eval.evaluate()
+
+        self.assertEqual(result, 7.0)
+
     def test_cos(self):
         self.eval.set_expression("0 cos 2 +")
 

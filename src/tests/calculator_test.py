@@ -1,5 +1,6 @@
 import unittest
 from calculator import Calculator
+from calculator_io import instructions
 
 
 class StubIO:
@@ -15,6 +16,9 @@ class StubIO:
 
     def set_inputs(self, inputs: list):
         self.inputs = inputs + ["", ""]
+
+    def print_instructions(self):
+        self.outputs.append(instructions)
 
 
 class TestCalculator(unittest.TestCase):
@@ -35,7 +39,7 @@ class TestCalculator(unittest.TestCase):
 
         self.calc.start()
 
-        self.assertEqual(self.io.outputs[0], "instructions")
+        self.assertEqual(self.io.outputs[0], instructions)
 
     def test_set_variable(self):
         self.io.set_inputs(["var", "set", "a", "5"])
@@ -138,3 +142,17 @@ class TestCalculator(unittest.TestCase):
         self.calc.start()
 
         self.assertEqual(self.io.outputs[0], "ERROR: division by zero")
+
+    def test_float_var_value(self):
+        self.io.set_inputs(["var", "set", "a", "3.1"])
+
+        self.calc.start()
+
+        self.assertEqual(self.calc.variables, {"a": "3.1"})
+
+    def test_invalid_float_var(self):
+        self.io.set_inputs(["var", "set", "a", ".3", "3.3.3", "3.", "3.1"])
+
+        self.calc.start()
+
+        self.assertEqual(self.calc.variables, {"a": "3.1"})
