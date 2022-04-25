@@ -75,7 +75,9 @@ class Evaluator:
         Returns:
             float: The result of the function.
         """
-        if name == "cos":
+        if name == "abs":
+            result = abs(x)
+        elif name == "cos":
             result = cos(x)
         elif name == "exp":
             result = exp(x)

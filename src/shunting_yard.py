@@ -3,7 +3,7 @@ from string import ascii_lowercase
 
 
 operators = ["+", "-", "*", "/", "^"]
-functions = ["cos", "exp", "lb", "lg", "ln", "sin", "sqrt", "tan"]
+functions = ["abs", "cos", "exp", "lb", "lg", "ln", "sin", "sqrt", "tan"]
 precedence = {
     "+": 2,
     "-": 2,
@@ -56,7 +56,7 @@ class ShuntingYard:
             expression (str): The expression in infix notation.
             variables (dict): Variables currently stored.
         """
-        self.expression = expression
+        self.expression = expression.replace(" ", "")
         self.variables = variables
         self.output = []
         self.opstack = []
