@@ -12,3 +12,5 @@ The tests can be run and a coverage report created by running
 After running the tests, the report can be found in htmlcov/index.html, or it can be opened with the command
 
 `poetry run invoke open-report`
+
+Currently (27.4.) the test coverage is 100% accoring to the coverage report, but for some reason codecov says it's only 98%
