@@ -22,6 +22,12 @@ The time complexity is O(n), where n is the length of the expression. The space 
 
 The calculator should work with all kinds of inputs but it is very much possible that I have not tested a certain kind of input that won't work.
 
+Future improvements:
+ * more functions
+ * more operators
+ * constants such as pi and e
+ * changing between radians and degrees
+
 ## Sources
 
 The screenshot of the pseudocode is from [this](https://en.wikipedia.org/wiki/Shunting-yard_algorithm#The_algorithm_in_detail) Wikipedia article.
