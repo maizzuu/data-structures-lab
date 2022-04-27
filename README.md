@@ -3,6 +3,8 @@
 ![Github Actions](https://github.com/maizzuu/data-structures-lab/workflows/CI/badge.svg)
 [![codecov](https://codecov.io/gh/maizzuu/data-structures-lab/branch/main/graph/badge.svg?token=BKSOJQ7FGV)](https://codecov.io/gh/maizzuu/data-structures-lab)
 
+A scientific calculator project for the course Data Structures Lab, 2022 period 4 at the University of Helsinki.
+
 ### Documentation:
 
 - [Project specification](https://github.com/maizzuu/data-structures-lab/blob/main/documentation/project_specification.md)
